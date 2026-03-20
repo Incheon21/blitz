@@ -21,7 +21,7 @@
     "@prisma/client": "^4.5.0",
     "@tanstack/react-query": "5.51.1",
     "blitz": "3.0.2",
-    "flatted": "3.2.7",
+    "flatted": "3.4.2",
     "next": "15.0.1",
     "prisma": "^4.5.0",
     "react": "19.0.0",
