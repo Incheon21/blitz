@@ -1,0 +1,44 @@
+name: OSV Scanner SCA
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  push:
+    branches:
+      - main
+      - master
+  schedule:
+    - cron: "30 12 * * 1"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  security-events: write
+  actions: read
+
+jobs:
+  scan-pr:
+    name: OSV Scanner PR Scan
+    if: github.event_name == 'pull_request' && github.actor != 'dependabot[bot]'
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable-pr.yml@v2.3.5
+    with:
+      scan-args: |-
+        --recursive
+        ./
+      upload-sarif: true
+      fail-on-vuln: false
+
+  scan-full:
+    name: OSV Scanner Full Scan
+    if: github.event_name != 'pull_request' && github.actor != 'dependabot[bot]'
+    uses: google/osv-scanner-action/.github/workflows/osv-scanner-reusable.yml@v2.3.5
+    with:
+      scan-args: |-
+        --recursive
+        ./
+      upload-sarif: true
+      fail-on-vuln: false
